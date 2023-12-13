@@ -9,13 +9,75 @@
 </head>
 <body>
     <article class="article">
-        <input type="text" class="input" placeholder="Text here...">
-        <button type="submit" class="submit-btn btn">Submit</button>
+        <h1 class="username-text hide"></h1>
+        <section class="register-section">
+            <form id="registerForm" class="register-form">
+                <input type="text" name="username" class="input username-input" placeholder="Enter your name...">
+                <button type="submit" class="register-btn btn">Submit</button>
+            </form>
+           
+        </section>
+        <ul class="message-list"></ul>
+        <section class="message-section hide">
+            <span class="typing-span"></span>
+            <form id="messageForm" class="message-form">
+                
+                <input type="text" class="input message-input" name="message" placeholder="Text here...">
+            <button type="submit" class="message-btn btn">Submit</button>
+            </form>
+            
+        </section>
     </article>
+    
 
     <script src="js/socket.io.min.js"></script>
     <script>
         const socket = io()
+        const registerSection = document.getElementsByClassName('register-section')[0],
+              messageSection = document.getElementsByClassName('message-section')[0],
+              messagesList = document.getElementsByClassName('message-list')[0],
+              usernameText = document.getElementsByClassName('username-text')[0],
+              typingSpan = document.getElementsByClassName('typing-span')[0],
+              registerForm = document.getElementById('registerForm'),
+              messageForm = document.getElementById('messageForm'),
+              usernameInput = document.getElementsByClassName('username-input')[0],
+              messageInput = document.getElementsByClassName('message-input')[0],
+              registerButton = document.getElementsByClassName('register-btn')[0],
+              messageButton = document.getElementsByClassName('message-btn')[0];
+              registerForm.addEventListener('submit', (e) => {
+                e.preventDefault()
+                if(usernameInput.value) {
+                        socket.emit('register', {
+                            message: usernameInput.value
+                        })
+                        registerSection.classList.add('hide')
+                        messageSection.classList.remove('hide')
+                        usernameText.classList.remove('hide')
+                        typingSpan.innerText = ""
+                    }
+                })
+                socket.on('register', (data) => {
+                    usernameText.innerText = data
+                })
+                messageForm.addEventListener('submit', (e) => {
+                    e.preventDefault()
+                    if (messageInput.value) {
+                        socket.emit('send message', messageInput.value)
+                        messageInput.value = ""
+                    }
+                }
+                )
+                socket.on('send message', (data) => {
+                    messagesList.innerHTML += data
+                    typingSpan.innerHTML = ""
+                })
+                messageInput.addEventListener('keypress', () => {
+                    socket.emit('typing')
+                })
+                socket.on('typing', (data) => {
+                    console.log(data)
+                    typingSpan.innerHTML = `<em> ${data} is typing... </em>`
+                })
     </script>
 </body>
 </html>

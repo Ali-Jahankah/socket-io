@@ -19,4 +19,35 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         console.log(`<<< User with ID: ${socket.id} is disconnected! :( >>>`)
     })
+    socket.on('register', (data) => {
+        socket.username = data.message
+        console.log(`User set to ${socket.username} with ID: ${socket.id}`);
+        socket.emit('register', socket.username)
+    })
+    socket.on('send message', (data) => {
+        const date = new Date(),
+              year = date.getFullYear(),
+              month = date.getMonth() + 1,
+              day = date.getDate()
+              fullDate = `${day}/${month}/${year}`
+              hours = date.getHours().toString().padStart(2, '0')
+              minutes = date.getMinutes().toString().padStart(2, '0');
+              message = {
+                text: data,
+                user: socket.username,
+                date: fullDate,
+              }
+              formattedMessage = `<li class="li" >
+            <h4 class="message-title" >
+            <span class="message-span" >${message.user}</span>
+            <span class="message-span" >${message.date}</span>
+            <span class="message-span" >${hours}:${minutes}</span>
+            </h4>
+            <p class="message-text" >${message.text}</p>
+              </li>`
+        io.sockets.emit('send message', formattedMessage)
+    })
+    socket.on('typing', () => {
+        socket.broadcast.emit('typing', socket.username)
+    })
 })
