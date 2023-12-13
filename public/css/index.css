@@ -79,7 +79,7 @@ display: flex;
     width: 60%;
 }
 .hide{
-    display: none;
+    display: none !important;
 }
 .show{
     display: block;

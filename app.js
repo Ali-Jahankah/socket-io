@@ -24,7 +24,6 @@ io.on('connection', socket => {
     socket.on('register', (data) => {
         socket.username = data.message
         console.log(`User set to ${socket.username} with ID: ${socket.id}`);
-        socket.emit('register', socket.username)
     })
     socket.on('send message', (data) => {
         const date = new Date(),

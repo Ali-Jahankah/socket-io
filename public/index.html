@@ -19,7 +19,7 @@
         </section>
         <ul class="message-list"></ul>
         <section class="message-section hide">
-            <span class="typing-span"></span>
+            <span class="typing-span hide"></span>
             <form id="messageForm" class="message-form">
                 
                 <input type="text" class="input message-input" name="message" placeholder="Text here...">
@@ -70,12 +70,13 @@
                 socket.on('send message', (data) => {
                     messagesList.innerHTML += data
                     typingSpan.innerHTML = ""
+                    typingSpan.classList.add('hide')
                 })
                 messageInput.addEventListener('keypress', () => {
                     socket.emit('typing')
                 })
                 socket.on('typing', (data) => {
-                    console.log(data)
+                    typingSpan.classList.remove('hide')
                     typingSpan.innerHTML = `<em> ${data} is typing... </em>`
                 })
     </script>

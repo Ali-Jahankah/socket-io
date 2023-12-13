@@ -1,6 +1,0 @@
-{
-    "rewrites": [
-      { "source": "/socket.io", "destination": "/socket.io" },
-      { "source": "/(.*)", "destination": "/index.html" }
-    ]
-  }
