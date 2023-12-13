@@ -57,6 +57,7 @@
                     }
                 })
                 socket.on('register', (data) => {
+                    console.log(data)
                     usernameText.innerText = data
                 })
                 messageForm.addEventListener('submit', (e) => {

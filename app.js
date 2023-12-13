@@ -22,10 +22,13 @@ io.on('connection', socket => {
         console.log(`<<< User with ID: ${socket.id} is disconnected! :( >>>`)
     })
     socket.on('register', (data) => {
+       
         socket.username = data.message
+        socket.emit('register', socket.username)
         console.log(`User set to ${socket.username} with ID: ${socket.id}`);
     })
     socket.on('send message', (data) => {
+    
         const date = new Date(),
               year = date.getFullYear(),
               month = date.getMonth() + 1,
