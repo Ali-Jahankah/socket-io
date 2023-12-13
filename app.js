@@ -5,7 +5,9 @@ const {Server} = require('socket.io');
 
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server)
+const transports = process.env.NODE_ENV === 'production' ? ['websocket'] : ['polling'];
+
+const io = new Server(server,transports)
 
 app.use(express.static('public'))
 const PORT = process.env.PORT || 3001
