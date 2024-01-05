@@ -100,7 +100,6 @@ display: flex;
     padding: 0.5em;
     background: #d7bfff26;
     border-radius: 5px;
-    width: 60%;
     color: #aaaaaa;
     margin: 1em;
     list-style: none;
@@ -128,4 +127,28 @@ display: flex;
     border-bottom-right-radius: 50px;
     margin: 0.2em;
     border: 2px dashed #00d8ff;
+}
+.online_user_span{
+    color: white;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    background: #65ffe15e;
+    padding: 0.5em;
+}
+
+.lobby_users, .online_users{
+    color: white;
+    background: rgba(0, 0, 0, 0.763);
+    padding: 0em 1em;
+    margin: 1em 0em;
+    color: #80eb88;
+
+}
+@media screen and (min-width: 720px) {
+    .li{
+        width: 500px;
+    }
 }

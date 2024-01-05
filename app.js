@@ -15,20 +15,27 @@ const PORT = process.env.PORT || 3001
 server.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
 })
+let allOnlineUserObjects = {};
 io.on('connection', socket => {
-    console.log(`<<< User with ID: ${socket.id} connected! >>>`)
-
+socket.on('app run', () => {
+    
+    socket.emit('app run', {onlineUsers: Object.values(allOnlineUserObjects)})
+})
     socket.on('disconnect', () => {
-        console.log(`<<< User with ID: ${socket.id} is disconnected! :( >>>`)
+        delete allOnlineUserObjects[socket.id];
+        io.sockets.emit('user disconnect', {onlineUsers:Object.values(allOnlineUserObjects)})
     })
     socket.on('register', (data) => {
-       
         socket.username = data.message
-        socket.emit('register', socket.username)
-        console.log(`User set to ${socket.username} with ID: ${socket.id}`);
+        allOnlineUserObjects[socket.id] = {
+            id: socket.id,
+            username: data.message
+        }
+        const onlineUsers = Object.values(allOnlineUserObjects);
+        socket.emit('register', {name: socket.username})
+        io.sockets.emit('new user', {onlineUsers})
     })
     socket.on('send message', (data) => {
-    
         const date = new Date(),
               year = date.getFullYear(),
               month = date.getMonth() + 1,
