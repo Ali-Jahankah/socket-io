@@ -55,7 +55,7 @@ socket.on('app run', () => {
             <span class="message-span" >${hours}:${minutes}</span>
             </h4>
             <p class="message-text" >${message.text}</p>
-              </li>`
+              </li>`;
         io.sockets.emit('send message', formattedMessage)
     })
     socket.on('typing', () => {

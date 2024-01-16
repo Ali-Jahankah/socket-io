@@ -1,106 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/index.css">
-    <title>Learning Socket.io</title>
-</head>
-<body>
-    <article class="article">
-        <h1 class="username-text hide"></h1>
-        <section class="register-section">
-            <form id="registerForm" class="register-form">
-                <input type="text" name="username" class="input username-input" placeholder="Enter your name..." autocomplete="off">
-                <button type="submit" class="register-btn btn">Submit</button>
-            </form>
-           
-        </section>
-        <h3 class="online_users"></h3>
-        <h3 class="lobby_users"></h3>
-        <ul class="message-list"></ul>
-        <section class="message-section hide">
-            <span class="typing-span hide"></span>
-            <form id="messageForm" class="message-form">
-                
-                <input type="text" class="input message-input" name="message" placeholder="Text here..." autocomplete="off">
-            <button type="submit" class="message-btn btn">Submit</button>
-            </form>
-            
-        </section>
-    </article>
-    
 
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script>
-        const socket = io(window.location.origin,{transports: ['websocket'],upgrade:false})
-        const registerSection = document.getElementsByClassName('register-section')[0],
-              messageSection = document.getElementsByClassName('message-section')[0],
-              messagesList = document.getElementsByClassName('message-list')[0],
-              usernameText = document.getElementsByClassName('username-text')[0],
-              typingSpan = document.getElementsByClassName('typing-span')[0],
-              registerForm = document.getElementById('registerForm'),
-              messageForm = document.getElementById('messageForm'),
-              usernameInput = document.getElementsByClassName('username-input')[0],
-              messageInput = document.getElementsByClassName('message-input')[0],
-              registerButton = document.getElementsByClassName('register-btn')[0],
-              onlineUsers = document.getElementsByClassName('online_users')[0],
-              lobbyUsers = document.getElementsByClassName('lobby_users')[0],
-              messageButton = document.getElementsByClassName('message-btn')[0];
-              const setUsers = (data) => {
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Learning Socket.io</title>
+    </head>
+
+    <body>
+        <article class="article">
+            <h1 class="username-text hide"></h1>
+            <section class="register-section">
+                <form id="registerForm" class="register-form">
+                    <input type="text" name="username" class="input username-input" placeholder="Enter your name..."
+                        autocomplete="off">
+                    <button type="submit" class="register-btn btn">Submit</button>
+                </form>
+
+            </section>
+            <h3 class="online_users"></h3>
+            <h3 class="lobby_users"></h3>
+            <ul class="message-list"></ul>
+            <section class="message-section hide">
+                <span class="typing-span hide"></span>
+                <form id="messageForm" class="message-form">
+
+                    <input type="text" class="input message-input" name="message" placeholder="Text here..."
+                        autocomplete="off">
+                    <button type="submit" class="message-btn btn">Submit</button>
+                </form>
+
+            </section>
+        </article>
+
+
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+        <script>
+            const socket = io(window.location.origin, { transports: ['websocket'], upgrade: false })
+            const registerSection = document.getElementsByClassName('register-section')[0],
+                messageSection = document.getElementsByClassName('message-section')[0],
+                messagesList = document.getElementsByClassName('message-list')[0],
+                usernameText = document.getElementsByClassName('username-text')[0],
+                typingSpan = document.getElementsByClassName('typing-span')[0],
+                registerForm = document.getElementById('registerForm'),
+                messageForm = document.getElementById('messageForm'),
+                usernameInput = document.getElementsByClassName('username-input')[0],
+                messageInput = document.getElementsByClassName('message-input')[0],
+                registerButton = document.getElementsByClassName('register-btn')[0],
+                onlineUsers = document.getElementsByClassName('online_users')[0],
+                lobbyUsers = document.getElementsByClassName('lobby_users')[0],
+                messageButton = document.getElementsByClassName('message-btn')[0];
+            const setUsers = (data) => {
                 onlineUsers.innerHTML = `Online Users (${data.onlineUsers.length}): `
                 for (const user of data.onlineUsers) {
                     onlineUsers.innerHTML += `<span class= "online_user_span">${user.username}</span> `
                 }
-              }
-              socket.emit('app run', {id: socket.id})
-              socket.on('app run', (data) => {
-               setUsers(data)
-              })
-              registerForm.addEventListener('submit', (e) => {
+            }
+            socket.emit('app run', { id: socket.id })
+            socket.on('app run', (data) => {
+                setUsers(data)
+            })
+            registerForm.addEventListener('submit', (e) => {
                 e.preventDefault()
-                if(usernameInput.value) {
-                        socket.emit('register', {
-                            message: usernameInput.value
-                        })
-                        registerSection.classList.add('hide')
-                        messageSection.classList.remove('hide')
-                        usernameText.classList.remove('hide')
-                        typingSpan.innerText = ""
-                    }
-                })
-                socket.on('register', (data) => {
-                    usernameText.innerText = data.name
-                })
-                socket.on('new user', data => {
-                    setUsers(data)
-                })
-                socket.on('user disconnect', (data) => {
-                    setUsers(data)
-                })
-                messageForm.addEventListener('submit', (e) => {
-                    e.preventDefault()
-                    if (messageInput.value) {
-                        socket.emit('send message', messageInput.value)
-                        messageInput.value = ""
-                    }
+                if (usernameInput.value) {
+                    socket.emit('register', {
+                        message: usernameInput.value
+                    })
+                    registerSection.classList.add('hide')
+                    messageSection.classList.remove('hide')
+                    usernameText.classList.remove('hide')
+                    typingSpan.innerText = ""
                 }
-                )
-                socket.on('send message', (data) => {
-                    messagesList.innerHTML += data
-                    typingSpan.innerHTML = ""
-                    typingSpan.classList.add('hide')
-                })
-                messageInput.addEventListener('input', () => {
-                    if (messageInput.value.trim() !== '') {
-        socket.emit('typing');
-    }
-                })
-                socket.on('typing', (data) => {
-                    typingSpan.classList.remove('hide')
-                    typingSpan.innerHTML = `<em> ${data} is typing... </em>`
-                })
-    </script>
-</body>
+            })
+            socket.on('register', (data) => {
+                usernameText.innerText = data.name
+            })
+            socket.on('new user', data => {
+                setUsers(data)
+            })
+            socket.on('user disconnect', (data) => {
+                setUsers(data)
+            })
+            messageForm.addEventListener('submit', (e) => {
+                e.preventDefault()
+                if (messageInput.value) {
+                    socket.emit('send message', messageInput.value)
+                    messageInput.value = ""
+                }
+            }
+            )
+            socket.on('send message', (data) => {
+                // messagesList.scrollTop = messagesList.scrollHeight - messagesList.clientHeight
+
+                messagesList.innerHTML += data
+                typingSpan.innerHTML = ""
+                typingSpan.classList.add('hide')
+                messagesList.scrollTop = 1e9
+            })
+            messageInput.addEventListener('input', () => {
+                if (messageInput.value.trim() !== '') {
+                    socket.emit('typing');
+                }
+            })
+            socket.on('typing', (data) => {
+                typingSpan.classList.remove('hide')
+                typingSpan.innerHTML = `<em> ${data} is typing... </em>`
+            })
+        </script>
+    </body>
+
 </html>

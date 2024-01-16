@@ -32,7 +32,7 @@ input{
 }
 .article{
     width: 100%;
-    min-height: 100vh;
+    min-height: 90vh;
    display: flex;
    flex-direction: column;
 }
@@ -51,8 +51,7 @@ display: flex;
 .message-section{
     margin-bottom: 2em;
     align-items: flex-end;
-    flex: 0;
-    flex-direction: column;
+    flex: 1;
 }
 .register-section{
     margin-top: 2em;
@@ -85,8 +84,25 @@ display: flex;
     display: block;
 }
 .message-list{
-    flex: 1;
     padding: 1em;
+    height: 60vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.message-list::-webkit-scrollbar{
+    background: gray;
+    width: 1.5em;
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+}
+
+.message-list::-webkit-scrollbar-thumb{
+    background: linear-gradient(45deg, #0000009c, black, #0000009c);
+    border-radius: 10px;
 }
 .username-text{
     font-size: 1.8rem;
