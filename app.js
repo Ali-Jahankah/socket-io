@@ -47,16 +47,11 @@ socket.on('app run', () => {
                 text: data,
                 user: socket.username,
                 date: fullDate,
+                user_id: socket.id,
+               time:`${hours}:${minutes}`
               }
-              formattedMessage = `<li class="li" >
-            <h4 class="message-title" >
-            <span class="message-span" >${message.user}</span>
-            <span class="message-span" >${message.date}</span>
-            <span class="message-span" >${hours}:${minutes}</span>
-            </h4>
-            <p class="message-text" >${message.text}</p>
-              </li>`;
-        io.sockets.emit('send message', formattedMessage)
+              
+        io.sockets.emit('send message', message)
     })
     socket.on('typing', () => {
         socket.broadcast.emit('typing', socket.username)

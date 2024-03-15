@@ -55,7 +55,7 @@
             const setUsers = (data) => {
                 onlineUsers.innerHTML = `Online Users (${data.onlineUsers.length}): `
                 for (const user of data.onlineUsers) {
-                    onlineUsers.innerHTML += `<span class= "online_user_span">${user.username}</span> `
+                    onlineUsers.innerHTML += `<span class= "online_user_span" data-id= "${user.id}">${user.username}</span> `
                 }
             }
             socket.emit('app run', { id: socket.id })
@@ -92,9 +92,15 @@
             }
             )
             socket.on('send message', (data) => {
-                // messagesList.scrollTop = messagesList.scrollHeight - messagesList.clientHeight
-
-                messagesList.innerHTML += data
+            const formattedMessage = `<li class="li ${socket.id === data.user_id ? 'self-message' : ''}" >
+            <h4 class="message-title" >
+            <span class="message-span" >${data.user}</span>
+            <span class="message-span" >${data.date}</span>
+            <span class="message-span" >${data.time}</span>
+            </h4>
+            <p class="message-text" >${data.text}</p>
+              </li>`;
+                messagesList.innerHTML += formattedMessage
                 typingSpan.innerHTML = ""
                 typingSpan.classList.add('hide')
                 messagesList.scrollTop = 1e9

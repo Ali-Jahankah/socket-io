@@ -52,6 +52,13 @@ display: flex;
     margin-bottom: 2em;
     align-items: flex-end;
     flex: 1;
+    flex-direction: column;
+    justify-content: center;
+}
+.self-message{
+    background: #032b3aa8 !important;
+    align-self: end;
+    box-shadow: 0px 0px 4px 1px #fcf2f27d;
 }
 .register-section{
     margin-top: 2em;
@@ -88,6 +95,8 @@ display: flex;
     height: 60vh;
     overflow-y: auto;
     scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
 }
 
 .message-list::-webkit-scrollbar{
@@ -153,8 +162,22 @@ display: flex;
     -o-border-radius: 5px;
     background: #65ffe15e;
     padding: 0.5em;
+    cursor: pointer;
+    transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -ms-transition: all 0.6s;
+    -o-transition: all 0.6s;
 }
-
+.online_user_span:hover{
+    background: #35ffd7da;
+    color: black;
+    transition: all 0.6s;
+    -webkit-transition: all 0.6s;
+    -moz-transition: all 0.6s;
+    -ms-transition: all 0.6s;
+    -o-transition: all 0.6s;
+}
 .lobby_users, .online_users{
     color: white;
     background: rgba(0, 0, 0, 0.763);
