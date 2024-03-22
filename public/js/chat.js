@@ -32,7 +32,13 @@ const setUsers = (data) => {
         onlineUserRows.forEach(row => {
             row.addEventListener('click', () => {
               if(socket.id !== row.dataset.id){
-                testFunction(self, socket.id, row.dataset.username, row.dataset.id )
+                const DirectMessageData = {
+                    from: self,
+                    fromId: socket.id,
+                    to: row.dataset.username,
+                    toId: row.dataset.id
+                }
+                testFunction(DirectMessageData)
               } 
             });
         });
@@ -40,9 +46,8 @@ const setUsers = (data) => {
 
     showUser.innerHTML = 'Users <br/>' + data.onlineUsers.length
 }
-const testFunction = (from,fromId,to,toId) => {
-   
-console.log(`Message from ${from} with ID: ${fromId}; to ${to} with ID: ${toId}`)
+const testFunction = (data) => {
+socket.emit('directMessage',data);
 }
 socket.emit('app run', { id: socket.id })
 socket.on('app run', (data) => {
@@ -77,20 +82,7 @@ messageForm.addEventListener('submit', (e) => {
     }
 }
 )
-socket.on('send message', (data) => {
-const formattedMessage = `<li class="message-li ${socket.id === data.user_id ? 'self-message' : ''}" >
-<h4 class="message-title" >
-<span class="message-span" >${socket.id === data.user_id ? 'You' : data.user}</span>
-<span class="message-span" >${data.date}</span>
-<span class="message-span" >${data.time}</span>
-</h4>
-<p class="message-text" >${data.text}</p>
-  </li>`;
-    messagesList.innerHTML += formattedMessage
-    typingSpan.innerHTML = ""
-    typingSpan.classList.add('hide')
-    messagesList.scrollTop = 1e9
-})
+socket.on('send message', (data) => handleMessages(data))
 messageInput.addEventListener('input', () => {
     if (messageInput.value.trim() !== '') {
         socket.emit('typing');
@@ -100,3 +92,18 @@ socket.on('typing', (data) => {
     typingSpan.classList.remove('hide')
     typingSpan.innerHTML = `<em> ${data} is typing... </em>`
 })
+socket.on('directMessage',(data)=>handleMessages(data,'directMessage'))
+const handleMessages = (data,classes) =>{
+    const formattedMessage = `<li class="${classes} message-li ${socket.id === data.user_id ? 'self-message' : ''}" >
+    <h4 class="message-title" >
+    <span class="message-span" >${socket.id === data.user_id ? 'You' : data.user}</span>
+    <span class="message-span" >${data.date}</span>
+    <span class="message-span" >${data.time}</span>
+    </h4>
+    <p class="message-text" >${data.text}</p>
+      </li>`;
+        messagesList.innerHTML += formattedMessage
+        typingSpan.innerHTML = ""
+        typingSpan.classList.add('hide')
+        messagesList.scrollTop = 1e9
+}

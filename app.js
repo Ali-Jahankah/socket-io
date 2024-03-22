@@ -16,6 +16,23 @@ server.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
 })
 let allOnlineUserObjects = {};
+const createMessage = (data,id, username) =>{
+    const date = new Date(),
+    year = date.getFullYear(),
+    month = date.getMonth() + 1,
+    day = date.getDate()
+    fullDate = `${day}/${month}/${year}`
+    hours = date.getHours().toString().padStart(2, '0')
+    minutes = date.getMinutes().toString().padStart(2, '0');
+    message = {
+      text: data,
+      user: username,
+      date: fullDate,
+      user_id: id,
+     time:`${hours}:${minutes}`
+    }
+    return message
+}
 io.on('connection', socket => {
 socket.on('app run', () => {
     
@@ -35,25 +52,13 @@ socket.on('app run', () => {
         socket.emit('register', {name: socket.username})
         io.sockets.emit('new user', {onlineUsers})
     })
-    socket.on('send message', (data) => {
-        const date = new Date(),
-              year = date.getFullYear(),
-              month = date.getMonth() + 1,
-              day = date.getDate()
-              fullDate = `${day}/${month}/${year}`
-              hours = date.getHours().toString().padStart(2, '0')
-              minutes = date.getMinutes().toString().padStart(2, '0');
-              message = {
-                text: data,
-                user: socket.username,
-                date: fullDate,
-                user_id: socket.id,
-               time:`${hours}:${minutes}`
-              }
-              
-        io.sockets.emit('send message', message)
+    socket.on('send message', (data) => {        
+        io.sockets.emit('send message', createMessage(data,socket.id, socket.username))
     })
     socket.on('typing', () => {
         socket.broadcast.emit('typing', socket.username)
     })
+    socket.on('directMessage',(data)=>{
+        io.to(data.toId).emit('directMessage',data)
+        })
 })
