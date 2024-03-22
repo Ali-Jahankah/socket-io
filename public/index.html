@@ -18,11 +18,23 @@
                         autocomplete="off">
                     <button type="submit" class="register-btn btn">Submit</button>
                 </form>
-
             </section>
-            <h3 class="online_users"></h3>
-            <h3 class="lobby_users"></h3>
+            <section class="main-body">
+            <div class="online-users-div">  
+                <span class="users-display-btn" id="showUsers">Users</span>
+                <table class="online_users">
+                <thead class="member-thead">
+                    <tr class="member-tr">
+                        <td class="member-title">Online</td>
+                    </tr>
+                </thead>
+                <tbody class="member-tbody">
+
+                </tbody>
+            </table></div>
+         
             <ul class="message-list"></ul>
+            </section>
             <section class="message-section hide">
                 <span class="typing-span hide"></span>
                 <form id="messageForm" class="message-form">
@@ -31,89 +43,10 @@
                         autocomplete="off">
                     <button type="submit" class="message-btn btn">Submit</button>
                 </form>
-
             </section>
         </article>
-
-
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-        <script>
-            const socket = io(window.location.origin, { transports: ['websocket'], upgrade: false })
-            const registerSection = document.getElementsByClassName('register-section')[0],
-                messageSection = document.getElementsByClassName('message-section')[0],
-                messagesList = document.getElementsByClassName('message-list')[0],
-                usernameText = document.getElementsByClassName('username-text')[0],
-                typingSpan = document.getElementsByClassName('typing-span')[0],
-                registerForm = document.getElementById('registerForm'),
-                messageForm = document.getElementById('messageForm'),
-                usernameInput = document.getElementsByClassName('username-input')[0],
-                messageInput = document.getElementsByClassName('message-input')[0],
-                registerButton = document.getElementsByClassName('register-btn')[0],
-                onlineUsers = document.getElementsByClassName('online_users')[0],
-                lobbyUsers = document.getElementsByClassName('lobby_users')[0],
-                messageButton = document.getElementsByClassName('message-btn')[0];
-            const setUsers = (data) => {
-                onlineUsers.innerHTML = `Online Users (${data.onlineUsers.length}): `
-                for (const user of data.onlineUsers) {
-                    onlineUsers.innerHTML += `<span class= "online_user_span" data-id= "${user.id}">${user.username}</span> `
-                }
-            }
-            socket.emit('app run', { id: socket.id })
-            socket.on('app run', (data) => {
-                setUsers(data)
-            })
-            registerForm.addEventListener('submit', (e) => {
-                e.preventDefault()
-                if (usernameInput.value) {
-                    socket.emit('register', {
-                        message: usernameInput.value
-                    })
-                    registerSection.classList.add('hide')
-                    messageSection.classList.remove('hide')
-                    usernameText.classList.remove('hide')
-                    typingSpan.innerText = ""
-                }
-            })
-            socket.on('register', (data) => {
-                usernameText.innerText = data.name
-            })
-            socket.on('new user', data => {
-                setUsers(data)
-            })
-            socket.on('user disconnect', (data) => {
-                setUsers(data)
-            })
-            messageForm.addEventListener('submit', (e) => {
-                e.preventDefault()
-                if (messageInput.value) {
-                    socket.emit('send message', messageInput.value)
-                    messageInput.value = ""
-                }
-            }
-            )
-            socket.on('send message', (data) => {
-            const formattedMessage = `<li class="li ${socket.id === data.user_id ? 'self-message' : ''}" >
-            <h4 class="message-title" >
-            <span class="message-span" >${data.user}</span>
-            <span class="message-span" >${data.date}</span>
-            <span class="message-span" >${data.time}</span>
-            </h4>
-            <p class="message-text" >${data.text}</p>
-              </li>`;
-                messagesList.innerHTML += formattedMessage
-                typingSpan.innerHTML = ""
-                typingSpan.classList.add('hide')
-                messagesList.scrollTop = 1e9
-            })
-            messageInput.addEventListener('input', () => {
-                if (messageInput.value.trim() !== '') {
-                    socket.emit('typing');
-                }
-            })
-            socket.on('typing', (data) => {
-                typingSpan.classList.remove('hide')
-                typingSpan.innerHTML = `<em> ${data} is typing... </em>`
-            })
+        <script src="./js/chat.js">
         </script>
     </body>
 
